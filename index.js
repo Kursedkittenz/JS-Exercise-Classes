@@ -44,8 +44,24 @@ class Airplane {
 */
 
 class Person {
-  
+  constructor(name, age){
+    this.name = name
+    this.age = age
+    this.stomach = []
+  }
+  eat(someFood){
+    this.stomach.length< 10 ? this.stomach.push(someFood): 'I\'m too full'
+  }
+  poop(){
+    this.stomach.splice(0)
+  }
+  toString(){
+    return `${this.name}, ${this.age}`
+  }
 }
+
+const Jim = new Person('Jim',20)
+//console.log(Jim)
 
 /*
   TASK 2
@@ -62,8 +78,31 @@ class Person {
 */
 
 class Car {
-  
+  constructor(model, milesPerGallon){
+    this.model = model;
+    this.milesPerGallon = milesPerGallon
+    this.tank = 0;
+    this.odometer = 0;
+  }
+  fill(gallons){
+    this.tank += gallons
+  }
+  drive(distance){
+    if((distance/this.milesPerGallon) > this.tank) {
+      this.odometer += (this.tank * this.milesPerGallon)
+      this.tank = 0
+      return `"I ran out of fuel at ${this.tank * this.milesPerGallon} miles!" x being ${this.odometer + (this.tank * this.milesPerGallon)}`
+    }else{
+      this.odometer += distance 
+      this.tank -= (distance/this.milesPerGallon)
+
+    }
+  }
 }
+const Subaru = new Car("Sub", 2)
+Subaru.fill(10)
+Subaru.drive(6)
+//console.log(Subaru)
 
 /*
   TASK 3
@@ -79,8 +118,18 @@ class Car {
 */
 
 class Lambdasian {
-  
+  constructor(lam){
+    this.name = lam.name
+    this.age = lam.age
+    this.location = lam.location
+  }
+  speak(){
+    return `Hello my name is ${this.name}, I am from ${this.location}`
+  }
 }
+
+const me = new Lambdasian({name: 'Eric', age:27, location:'NY'})
+//console.log(me)
 
 /*
   TASK 4
@@ -97,9 +146,26 @@ class Lambdasian {
         + `grade` receives a `student` object and a `subject` string as arguments and returns '{student.name} receives a perfect score on {subject}'
 */
 
-class Instructor {
-
+class Instructor extends Lambdasian{
+  constructor(lam){
+    super(lam)
+    this.specialty = lam.specialty
+    this.favLanguage = lam.favLanguage
+    this.catchPhrase = lam.catchPhrase
+  }
+  demo(subject){
+    return `Today we are learning about ${subject}`
+  }
+  grade(student, subject){
+    return `${student.name} receives a perfect score on ${subject}`
+  }
+  grading(student){
+    return student.grade += (Math.ceil(Math.random()*100) * (Math.random() > .5 ? 1 :-1))
+  }
 }
+
+const teach = new Instructor({name: 'Eric', age:27, location:'NY',specialty: 'code', favLanguage: 'English', catchPhrase: 'Yo'})
+//console.log(teach)
 
 /*
   TASK 5
@@ -116,13 +182,45 @@ class Instructor {
         + `PRAssignment` a method that receives a subject as an argument and returns `student.name has submitted a PR for {subject}`
         + `sprintChallenge` similar to PRAssignment but returns `student.name has begun sprint challenge on {subject}`
 */
+/*
+  STRETCH PROBLEM (no tests!)
+    - Extend the functionality of the Student by adding a prop called grade and setting it equal to a number between 1-100.
+    - Now that our students have a grade build out a method on the Instructor (this will be used by _BOTH_ instructors and PM's) 
+    that will randomly add or subtract points to a student's grade. _Math.random_ will help.
+    - Add a graduate method to a student.
+      + This method, when called, will check the grade of the student and see if they're ready to graduate from BloomTech
+      + If the student's grade is above a 70% let them graduate! Otherwise go back to grading their assignments to increase their score.
+*/
 
-class Student {
-   
+class Student extends Lambdasian{
+   constructor(lam){
+     super(lam)
+     this.previousBackground = lam.previousBackground
+     this.className = lam.className
+     this.favSubjects = lam.favSubjects
+     this.grade = 80//Math.ceil(Math.random()*100)
+   }
+   listSubjects(){
+    return this.favSubjects.join()
+   }
+   PRAssignment(subject){
+    return `${this.name} has submitted a PR for ${subject}`
+   }  
+   sprintChallenge(subject){
+    return `${this.name} has begun sprint challenge on ${subject}`
+   }
+   graduate(){
+     return this.grade > 70 ? 'Time to graduate!' : 'Grade too low'
+   }
 }
 
-/*
-  TASK 6
+const Bro = new Student({name:'Bob',age:20,location:'NJ',previousBackground: 'cook',className:'Lambda',favSubjects:['a','b','c']})
+//console.log(Bro, Bro.graduate())
+teach.grading(Bro)
+console.log(Bro, Bro.graduate())
+
+/*  
+  TASK 6 
     - Write a ProjectManager class extending Instructor.
     - Its constructor takes a single argument - an object with the following keys:
         + All the keys used to initialize instances of Instructor.
@@ -135,14 +233,25 @@ class Student {
         + `debugsCode` a method that takes in a student object and a subject and returns `{name} debugs {student.name}'s code on {subject}`
 */
 
-class ProjectManager {
-   
+class ProjectManager extends Instructor{
+   constructor(lam){
+     super(lam)
+     this.gradClassName = lam.gradClassName
+     this.favInstructor = lam.favInstructor
+   }
+   standUp(channel){
+    return `${this.name} announces to ${channel}, @channel standy times!`
+   }
+   debugsCode(student, subject){
+    return `${this.name} debugs ${student.name}'s code on ${subject}`
+   }
 }
 
 /*
   STRETCH PROBLEM (no tests!)
     - Extend the functionality of the Student by adding a prop called grade and setting it equal to a number between 1-100.
-    - Now that our students have a grade build out a method on the Instructor (this will be used by _BOTH_ instructors and PM's) that will randomly add or subtract points to a student's grade. _Math.random_ will help.
+    - Now that our students have a grade build out a method on the Instructor (this will be used by _BOTH_ instructors and PM's) 
+    that will randomly add or subtract points to a student's grade. _Math.random_ will help.
     - Add a graduate method to a student.
       + This method, when called, will check the grade of the student and see if they're ready to graduate from BloomTech
       + If the student's grade is above a 70% let them graduate! Otherwise go back to grading their assignments to increase their score.
